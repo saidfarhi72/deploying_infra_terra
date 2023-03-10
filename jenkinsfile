@@ -1,0 +1,44 @@
+def ip = ""
+
+
+pipeline{
+    agent any 
+    tools {
+        terraform  'terraform-11'
+    }
+
+    stages{
+     
+        
+        stage("terraform"){
+            
+
+            steps{
+                
+                script{
+
+                if (fileExists('commandResult')) {
+                    sh "rm -rf commandResult "
+                } else {
+                    println "commandResult file not found"
+
+                }
+
+                
+                sh " terraform init"
+              
+                }
+            
+            }
+        }
+        stage('terraform apply') {
+            steps{
+                script{
+                sh " terraform apply --auto-approve "
+                }
+                
+        }
+        
+        
+ }
+}
