@@ -17,12 +17,6 @@ pipeline{
                 
                 script{
 
-                if (fileExists('commandResult')) {
-                    sh "rm -rf commandResult "
-                } else {
-                    println "commandResult file not found"
-
-                }
 
                 
                 sh " terraform init"
