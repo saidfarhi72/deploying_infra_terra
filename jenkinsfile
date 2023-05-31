@@ -8,17 +8,21 @@ pipeline{
     }
 
     stages{
-     
-        
+         stage("init") {
+            steps {
+                script {
+                    gv = load "script.groovy"
+                }
+            }
+        }
+    
         stage("terraform"){
             
 
             steps{
                 
                 script{
-
-
-                
+    
                 sh " terraform init"
               
                 }
@@ -32,7 +36,48 @@ pipeline{
                 }
                 
         }
-        
-        
- }
+              
+        }
+
+          stage("build and push image") {
+            steps {
+                script {
+                    gv.buildImage 'said.farhi72/demo-app:jma-3.0'
+                    gv.dockerLogin()
+                    gv.dockerPush 'said.farhi72/demo-app:jma-3.0'
+                }
+            }
+        }
+
+        stage("deploy") {
+            steps {
+                script {
+                    gv.deployApp()
+                }
+            }
+        }
+
+
+
+
+
+    }
+
+
+     post {
+        always {
+            // Cleanup tasks or other actions
+        }
+
+        success {
+            // Actions for successful build
+        }
+
+        failure {
+            // Actions for failed build
+            echo 'Build failed! Sending notifications...'
+
+           
+        }
+    }
 }
